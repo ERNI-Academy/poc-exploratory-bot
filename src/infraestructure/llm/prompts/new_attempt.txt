@@ -3,10 +3,10 @@ $action
 I received the following error
 $error
 
-Your objective is to provide new interactions that allow to continue the execution from the failing interaction.
+Your objective is to provide new interactions that allow to continue the execution from the failing interaction to the end of the step.
 Please re-evaluate your response taking into account the following:
--  Make sure that the this new interactions only use locators  from the DOM provided below. 
--  Don't suggest the same interaction that it is acctually failing.
+-  The new locators should exist in the DOM provided below.
+-  Don't use the same locator that was used in the failed interaction.
 
 Use the following JSON format for your response:
 $template_action

@@ -6,14 +6,15 @@ from src.domain.actions import Interaction
 
 class BrowserService:
 
-    def __init__(self):
+    def __init__(self, url):
         self.playwright = sync_playwright().start()
+        self.url = url
 
     def start(self):
         self.browser = self.playwright.chromium.launch(headless=False)
-        context = self.browser.new_context()
+        context = self.browser.new_context(ignore_https_errors=True)
         self.page = context.new_page()
-        #self.page.goto(url)
+        self.page.goto(self.url)
 
     def get_url(self):
         return self.page.url

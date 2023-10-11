@@ -4,8 +4,15 @@
             "name": "name of the scenario to execute",
             "steps": [
                 {
-                    "action": "Description of the step to perform to the application",
-                    "expected": "Expected status of the application after perform the step",
+                    "action": "Description of the first step to perform to the application",
+                    "expected": "Expected status of the application after perform the first step",
+                    "requirements": [
+                        "List of the idrequirements that are affected by this action"
+                    ]
+                },
+                {
+                    "action": "Description of the next step to perform to the application",
+                    "expected": "Expected status of the application after perform the next step",
                     "requirements": [
                         "List of the idrequirements that are affected by this action"
                     ]

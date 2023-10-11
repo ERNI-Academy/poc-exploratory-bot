@@ -1,5 +1,4 @@
 {
-    "result": "pass|fail",
     "acceptance_criteria": "acceptance criteria of the current_step",
     "not_satisfied": {
         "result": "fail",
@@ -23,5 +22,6 @@
             }
         ]
     },
-    "explanation": "Explain why you decide select satisfied or not satisfied."
+    "explanation": "Explain why you decide select satisfied or not satisfied.",
+    "result": "pass|fail"
 }

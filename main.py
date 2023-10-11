@@ -17,6 +17,6 @@ output_dir = f'{config["result_dir"]}'
 Path(output_dir).mkdir(parents=True, exist_ok=True)
 
 llm = PromptService(config["llm"])
-browser = BrowserService()
+browser = BrowserService(config["sut"]["base_url"])
 bot = ExploratoryBot(output_dir, llm, browser, config["retry_attempts"])
 bot.execute_use_cases(sut_reqs, sut_test_data, 1)

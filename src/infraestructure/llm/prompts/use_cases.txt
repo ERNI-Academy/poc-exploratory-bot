@@ -22,8 +22,9 @@ Definition Guidance:
 1. Make deductions over the requirements provided. which kind of application is, what it should be expected taking all the context into account.
 2. Make assumptions and fill the blanks whenever the requirements are ambigous
 3. Define a new test case minimizing repetition with the existing ones and try to cover requirements that are not covered yet (if any). Be imaginative and consider positive and negative scenarios.
-4. Fill the template breaking down by steps adding action of the step, expected result after run the step and linked requirements
+4. Fill the template breaking down by steps adding the action of each step, expected result after run the step and linked requirements. It is expected that a test case contains multiple steps.
 5. Re-evaluate the action and expected adding any context information that allows someone who never read the requirements to conduct the test case properly.
+6. Select only one test case for your response
 
 
 It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.

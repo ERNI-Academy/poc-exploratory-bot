@@ -102,12 +102,9 @@ class ExploratoryBot:
         template_action = self.read_file(self.action_sample)
         template_verification = self.read_file(self.verification_sample)
 
-        steps = "\n".join(
-            [
-                f"{i+1}. action: {step.action}, acceptance: {step.expected}"
-                for (i, step) in enumerate(use_case.steps)
-            ]
-        )
+
+        steps = json.dumps([{"step_number": i+1, "action": step.action, "acceptance": step.expected} for (i,step) in enumerate(use_case.steps)])
+
         action_data = {
             "test_data": test_data,
             "action_template": template_action,
@@ -141,7 +138,6 @@ class ExploratoryBot:
                 name, action_data, self.out_dir
             )
             while attempt <= self.attempts:
-                attempt += 1
                 try:
                     self.execute_interactions(interactions, path)
                     sleep(1)
@@ -153,11 +149,13 @@ class ExploratoryBot:
                     break
 
                 except InteractionException as e:
+                    attempt += 1
                     path = f"{self.out_dir}/{step}_{attempt}_action"
                     interactions = self.resolve_use_case_attempt_actions(
                         f"{step}_{attempt}", e, self.out_dir
                     )
                 except VerificationException as e:
+                    attempt += 1
                     interactions = self.resolve_use_case_step_actions(
                         name, action_data, self.out_dir, attempt
                     )
