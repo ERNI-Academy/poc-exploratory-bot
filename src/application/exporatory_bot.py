@@ -41,7 +41,7 @@ class ExploratoryBot:
         attempts: int = 1,
     ):
         self.out_dir = out_dir
-        self.base_dir = out_dir
+        self.base_dir = os.path.dirname(out_dir)
         self.prompt_service = prompt_service
         self.browser_service = browser_service
         self.attempts = attempts
@@ -51,10 +51,6 @@ class ExploratoryBot:
         covered_reqs = []
         while n_cases > 0:
             try:
-                self.out_dir = (
-                    f'{self.base_dir}/{datetime.now().strftime("%Y%m%d-%H%M%S")}'
-                )
-                os.mkdir(self.out_dir)
                 use_cases = self.generate_use_cases_from_reqs(
                     sut_reqs, executed_scenarios, covered_reqs
                 )
@@ -77,7 +73,7 @@ class ExploratoryBot:
         executed_scenarios,
         covered_requirements,
         prompt_name="0_use_cases_req.txt",
-        response_name="0_use_cases_res.txt",
+        response_name="0_use_cases_res.json",
     ):
         prompt_path = f"{self.out_dir}/{prompt_name}"
         response_path = f"{self.out_dir}/{response_name}"
@@ -190,7 +186,7 @@ class ExploratoryBot:
         self, attempt, exception: InteractionException, folder: str
     ):
         prompt_path = f"{folder}/{attempt}_attempt_req.txt"
-        response_path = f"{folder}/{attempt}_attempt_res.txt"
+        response_path = f"{folder}/{attempt}_attempt_res.json"
         data = {
             "url": self.browser_service.get_url(),
             "DOM": self.browser_service.get_content(),
@@ -208,7 +204,7 @@ class ExploratoryBot:
         self, step, verification_data: Dict, folder: str, attempt: int = 0
     ):
         prompt_path = f"{folder}/{step}_{attempt}_verification_req.txt"
-        response_path = f"{folder}/{step}_{attempt}_verification_res.txt"
+        response_path = f"{folder}/{step}_{attempt}_verification_res.json"
 
         verification_data.update(
             {
@@ -233,7 +229,7 @@ class ExploratoryBot:
         self, step, action_data: Dict, folder: str, attempt: int = 0
     ):
         prompt_path = f"{folder}/{step}_{attempt}_action_req.txt"
-        response_path = f"{folder}/{step}_{attempt}_action_res.txt"
+        response_path = f"{folder}/{step}_{attempt}_action_res.json"
         action_data.update(
             {
                 "url": self.browser_service.get_url(),
@@ -248,9 +244,9 @@ class ExploratoryBot:
         return from_dict(Interactions, json.loads(response))
 
     def read_file(self, file_path: str) -> str:
-        with codecs.open(file_path, "r", "utf-8-sig") as f:
+        with codecs.open(file_path, "r", "utf-8") as f:
             return f.read()
 
     def write_file(self, file_path: str, content: str):
-        with codecs.open(file_path, "w", "utf-8-sig") as f:
+        with codecs.open(file_path, "w", "utf-8") as f:
             f.write(content)

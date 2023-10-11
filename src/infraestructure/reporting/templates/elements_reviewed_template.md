@@ -1,0 +1,3 @@
+        - __Element $index__
+            - Locator: $locator
+            - Explanation: $explanation
