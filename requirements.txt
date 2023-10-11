@@ -1,0 +1,5 @@
+pytest-playwright
+lxml
+openai
+dacite
+bs4

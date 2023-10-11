@@ -1,0 +1,7 @@
+{
+    "click": "Click on element of the website",
+    "write": "Send text to any element of the website, params should be the text to send",
+    "navigation": "Navigate to specific url, params should be the url to navigate",
+    "inspection": "Review element in the screen, params should be the expected value",
+    "select": "Select element for a select web element. params should be the value of the option to select"
+}

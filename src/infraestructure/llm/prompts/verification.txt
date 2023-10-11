@@ -1,0 +1,41 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+We are in the middle of the execution of a manual test case. We need to Verify if the current state of the application met the acceptance_criteria of the current_step. At this point, we are verifying the current step. We don't want guidance for any future action/verification. Consider that the interaction of current_step has been already executed.
+
+You will be provided with information about the current state of the webpage, including the URL and DOM structure. Information about the test case and test data will be provided also. 
+
+context:
+{
+    "url": "$url",
+    "DOM": "$DOM"
+}
+
+test case:
+{
+    "name": "$use_case_name",
+    "steps": "$use_case_steps",
+    "current_step": "$step"
+}
+
+test data:
+$test_data
+
+response template:
+$verification_template
+
+Guidance for verification:
+1. Make deductions with all the information provided assuming that provided context not satisfies the acceptance_criteria of the current_step. You should consider the elements displayed in the DOM and as a secondary criteria the URL
+2. Re-evaluate your deductions ensuring that the DOM elements evaluated acctually exists in the DOM
+3. write down an explanation sumarizing all the deductions performed on step 1 and 2
+4. Make new deductions with all the information provided assuming that the provided context satisfies the acceptance_criteria of the current_step. You should consider the elements displayed in the DOM and as a secondary criteria the URL
+5. Re-evaluate your deductions ensuring that the DOM elements evaluated acctually exists in the DOM
+6. write down an explanation sumarizing all the deductions performed on step 4 and 5
+7. Given satisfied arguments from step 6 and not satisfied arguments from step 3, select which one fits better with the context provided.
+8. Write down a new explanation refering what is the reasoning behind step 7.
+9. Determine the result. Use the word "pass" if satisfied arguments are selected, use the word "fail" if not_satisfied is selected. It is important that you use this words pass or fail for the result in your response.
+10. Order all the information in the response template provided avobe.
+
+Note: Please ensure to review and fill in the information as needed before submitting the response.
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than $tokens tokens.

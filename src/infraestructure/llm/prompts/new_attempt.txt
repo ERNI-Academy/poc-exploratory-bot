@@ -1,0 +1,22 @@
+Trying the interaction
+$action
+I received the following error
+$error
+
+Your objective is to provide new interactions that allow to continue the execution from the failing interaction.
+Please re-evaluate your response taking into account the following:
+-  Make sure that the this new interactions only use locators  from the DOM provided below. 
+-  Don't suggest the same interaction that it is acctually failing.
+
+Use the following JSON format for your response:
+$template_action
+
+context:
+{
+    "url": "$url",
+    "DOM": "$DOM"
+}
+
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than $tokens tokens.

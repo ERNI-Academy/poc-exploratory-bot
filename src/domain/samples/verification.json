@@ -1,0 +1,27 @@
+{
+    "result": "pass|fail",
+    "acceptance_criteria": "acceptance criteria of the current_step",
+    "not_satisfied": {
+        "result": "fail",
+        "acceptance_criteria": "acceptance criteria of the current_step",
+        "explanation": "complete deductions from step 1 of guidance for verification",
+        "elements_reviewed": [
+            {
+                "locator": "xpath of the element reviewed in case of DOM, 'URL' in case of url",
+                "explanation": "Which is the criteria applied over this specific element"
+            }
+        ]
+    },
+    "satisfied": {
+        "result": "pass",
+        "acceptance_criteria": "acceptance criteria of the current_step",
+        "explanation": "complete deductions from step 2 of guidance for verification",
+        "elements_reviewed": [
+            {
+                "locator": "xpath of the element reviewed in case of DOM, 'URL' in case of url",
+                "explanation": "Which is the criteria applied over this specific element"
+            }
+        ]
+    },
+    "explanation": "Explain why you decide select satisfied or not satisfied."
+}

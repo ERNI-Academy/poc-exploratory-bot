@@ -1,0 +1,30 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+The goal is to generate a single new test case based on a web application requirements. You will be provided with the application requirements, a list of the tittle of existing tests, list of requirements already covered by at least one test
+
+You will also be provided with specific guidance to write this new test case and the expected format for your response.
+
+In this context use case and test case are equivalent.
+
+requirements:
+$requirements
+
+Existing test cases:
+$scenarios
+
+Covered requirements:
+$covered_requirements
+
+Response template:
+$use_case_template
+
+Definition Guidance:
+1. Make deductions over the requirements provided. which kind of application is, what it should be expected taking all the context into account.
+2. Make assumptions and fill the blanks whenever the requirements are ambigous
+3. Define a new test case minimizing repetition with the existing ones and try to cover requirements that are not covered yet (if any). Be imaginative and consider positive and negative scenarios.
+4. Fill the template breaking down by steps adding action of the step, expected result after run the step and linked requirements
+5. Re-evaluate the action and expected adding any context information that allows someone who never read the requirements to conduct the test case properly.
+
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than $tokens tokens.

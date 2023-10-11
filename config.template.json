@@ -1,0 +1,15 @@
+{
+    "result_dir": "./result",
+    "retry_attempts": 3,
+    "sut": {
+        "requirements": "./sample/requirements.txt",
+        "test_data": "./sample/data.json"
+    },
+    "llm": {
+        "type": "your-model-type",
+        "api": "your-openai-api-url",
+        "api_version": "your-api-version",
+        "api_key": "your-api-key",
+        "engine": "your-llm-engine"
+    }
+}

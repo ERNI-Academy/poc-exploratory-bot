@@ -1,0 +1,9 @@
+{
+    "interactions": [
+        {
+            "action": "from the available actions",
+            "locator": "XPath of the element to perform the action or UnkownLocator if the element is not present",
+            "params": "any param needed to perform the action"
+        }
+    ]
+}

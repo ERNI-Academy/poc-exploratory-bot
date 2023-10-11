@@ -1,0 +1,19 @@
+{
+    "use_cases": [
+        {
+            "name": "name of the scenario to execute",
+            "steps": [
+                {
+                    "action": "Description of the step to perform to the application",
+                    "expected": "Expected status of the application after perform the step",
+                    "requirements": [
+                        "List of the idrequirements that are affected by this action"
+                    ]
+                }
+            ],
+            "assumptions": [
+                "list of assumptions"
+            ]
+        }
+    ]
+}

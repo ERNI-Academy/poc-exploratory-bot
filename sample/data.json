@@ -1,0 +1,19 @@
+{
+    "test_data": [
+        {
+            "name": "url",
+            "value": "https://www.saucedemo.com",
+            "description": "base url for the application, This leads to the login page"
+        },
+        {
+            "name": "user",
+            "value": "standard_user",
+            "description": "Valid User used for the login"
+        },
+        {
+            "name": "password",
+            "value": "secret_sauce",
+            "description": "valid password for valid user"
+        }
+    ]
+}

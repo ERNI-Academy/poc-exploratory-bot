@@ -1,0 +1,34 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+I am executing a test case on a web application. I need to know which actions to perform on each element in the DOM provided in the dom in order to complete the current step. I only want indications for the current_step, don't advance any action of the future.
+You will be provided with information about the current state of the webpage, including the URL and DOM structure, as well as available test data. 
+Your response should be a detailed list specifying the interactions to be performed over the browser. Each interaction should include:
+ 1. The action from available actions
+ 2. The locator (using XPath) of the element, if the element is present in the DOM provided at context. Otherwise use "UnkownLocator" word.
+ 3. Any param required to perform the action.
+
+context:
+{
+    "url": "$url",
+    "DOM": "$DOM"
+}
+
+test case:
+{
+    "name": "$use_case_name",
+    "steps": "$use_case_steps",
+    "current_step": "$step"
+}
+
+test data:
+$test_data
+
+available actions:
+$action_catalog
+
+response template:
+$action_template
+
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than $tokens tokens.
