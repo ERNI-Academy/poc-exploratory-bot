@@ -7,7 +7,8 @@
         "elements_reviewed": [
             {
                 "locator": "xpath of the element reviewed in case of DOM, 'URL' in case of url",
-                "explanation": "Which is the criteria applied over this specific element"
+                "explanation": "Which is the criteria applied over this specific element",
+                "should_exist": "true|false"
             }
         ]
     },
@@ -18,7 +19,8 @@
         "elements_reviewed": [
             {
                 "locator": "xpath of the element reviewed in case of DOM, 'URL' in case of url",
-                "explanation": "Which is the criteria applied over this specific element"
+                "explanation": "Which is the criteria applied over this specific element",
+                "should_exist": "true|false"
             }
         ]
     },

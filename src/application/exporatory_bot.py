@@ -98,8 +98,16 @@ class ExploratoryBot:
         template_action = self.read_file(self.action_sample)
         template_verification = self.read_file(self.verification_sample)
 
-
-        steps = json.dumps([{"step_number": i+1, "action": step.action, "acceptance": step.expected} for (i,step) in enumerate(use_case.steps)])
+        steps = json.dumps(
+            [
+                {
+                    "step_number": i + 1,
+                    "action": step.action,
+                    "acceptance": step.expected,
+                }
+                for (i, step) in enumerate(use_case.steps)
+            ]
+        )
 
         action_data = {
             "test_data": test_data,
@@ -135,9 +143,11 @@ class ExploratoryBot:
             )
             while attempt <= self.attempts:
                 try:
+                    action_data[test_data] = json.dumps(interactions.test_data)
+                    verification_data[test_data] = json.dumps(interactions.test_data)
                     self.execute_interactions(interactions, path)
                     sleep(1)
-                    verification = self.verify_use_case_step_expected(
+                    verification = self.do_verification(
                         step, verification_data, self.out_dir, attempt
                     )
                     if verification.result == "fail":
@@ -171,6 +181,32 @@ class ExploratoryBot:
         self.browser_service.close()
         return verifications
 
+    def do_verification(self, step, verification_data, out_dir, attempt):
+        verification = self.verify_use_case_step_expected(
+            step, verification_data, out_dir, attempt
+        )
+        while True:
+            try:
+                result = (
+                    verification.satisfied
+                    if verification.result == "pass"
+                    else verification.not_satisfied
+                )
+                for element in result.elements_reviewed:
+                    if not "URL" in element.locator.upper():
+                        if element.should_exist:
+                            self.browser_service.assert_element_exists(element.locator)
+                        else:
+                            self.browser_service.assert_element_not_exists(
+                                element.locator
+                            )
+                break
+            except Exception as e:
+                verification = self.verify_use_case_step_expected_attempt(
+                    step, out_dir, e, attempt
+                )
+        return verification
+
     def execute_interactions(self, interactions: Interactions, path):
         action = 1
         for interaction in interactions.interactions:
@@ -191,7 +227,7 @@ class ExploratoryBot:
             "url": self.browser_service.get_url(),
             "DOM": self.browser_service.get_content(),
             "action": str(exception.interaction.__dict__),
-            "error": exception.original_exception.message,
+            "error": str(exception.original_exception),
             "template_action": self.read_file(self.action_sample),
         }
         request, response = self.prompt_service.decide_actions_from_attempt(data)
@@ -199,6 +235,28 @@ class ExploratoryBot:
         self.write_file(prompt_path, request)
         self.write_file(response_path, response)
         return from_dict(Interactions, json.loads(response))
+
+    def verify_use_case_step_expected_attempt(
+        self, step, folder: str, exception, attempt: int = 0
+    ):
+        prompt_path = f"{folder}/{step}_{attempt}_verification_req.txt"
+        response_path = f"{folder}/{step}_{attempt}_verification_res.json"
+
+        data = {
+            "url": self.browser_service.get_url(),
+            "DOM": self.browser_service.get_content(),
+            "error": str(exception),
+            "verification_template": self.read_file(self.verification_sample),
+        }
+
+        request, response = self.prompt_service.decide_success_of_step_attempt(data)
+        self.write_file(prompt_path, request)
+        self.write_file(response_path, response)
+        verifications = from_dict(Verifications, json.loads(response))
+        self.browser_service.get_screenshot(
+            f"{folder}/{step}_{attempt}_verification_image.png"
+        )
+        return verifications
 
     def verify_use_case_step_expected(
         self, step, verification_data: Dict, folder: str, attempt: int = 0

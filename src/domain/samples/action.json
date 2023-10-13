@@ -1,9 +1,18 @@
 {
+    "action": "action of 'current_step' provided in the context",
+    "acceptance": "acceptance of 'current_step' provided in the context",
     "interactions": [
         {
             "action": "from the available actions",
             "locator": "XPath of the element to perform the action or UnkownLocator if the element is not present",
             "params": "any param needed to perform the action"
+        }
+    ],
+    "test_data": [
+        {
+            "name": "name of the test data",
+            "value": "value of the test data",
+            "description": "Description of the test data"
         }
     ]
 }

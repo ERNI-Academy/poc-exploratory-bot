@@ -13,6 +13,9 @@ class PromptService:
             "./src/infraestructure/llm/prompts/verification.txt"
         )
         self.attempt_template_path = "./src/infraestructure/llm/prompts/new_attempt.txt"
+        self.verification_template_attempt_path = (
+            "./src/infraestructure/llm/prompts/verification_attempt.txt"
+        )
         openai.api_type = config["type"]
         openai.api_base = config["api"]
         openai.api_version = config["api_version"]
@@ -34,11 +37,11 @@ class PromptService:
         response = openai.ChatCompletion.create(
             engine=self.engine,
             messages=self.messages,
-            temperature=0.3,
-            max_tokens=self.response_tokens,
+            temperature=0.1,
+            max_tokens=self.response_tokens + 200,
             top_p=0.95,
             frequency_penalty=0,
-            presence_penalty=0,
+            presence_penalty=0.7,
             stop=None,
         )
 
@@ -77,6 +80,11 @@ class PromptService:
     def decide_success_of_step(self, data):
         request = self.apply_template(self.verification_template_path, data)
         response = self.send_to_QA(request)
+        return request, response
+
+    def decide_success_of_step_attempt(self, data):
+        request = self.apply_template(self.verification_template_attempt_path, data)
+        response = self.send_to_QA(request, False)
         return request, response
 
     def apply_template(self, template, data) -> str:

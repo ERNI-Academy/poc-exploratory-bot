@@ -1,11 +1,10 @@
-
 from bs4 import BeautifulSoup, Comment
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 from src.domain.actions import Interaction
 
-class BrowserService:
 
+class BrowserService:
     def __init__(self, url):
         self.playwright = sync_playwright().start()
         self.url = url
@@ -18,28 +17,32 @@ class BrowserService:
 
     def get_url(self):
         return self.page.url
-    
+
     def get_content(self):
         return self.clean_html(self.page.content())
 
     def close(self):
         self.page.close()
-        
+
     def stop(self):
         self.playwright.stop()
 
     def check_bool_attr(self, attributes, attribute):
-        return attribute in attributes and (attributes[attribute] == True or attributes[attribute] == "true")
+        return attribute in attributes and (
+            attributes[attribute] == True or attributes[attribute] == "true"
+        )
 
     def is_hidden(self, element):
         if element.attrs:
-            return self.check_bool_attr(element.attrs, 'aria-hidden') or self.check_bool_attr(element.attrs, 'hidden')
+            return self.check_bool_attr(
+                element.attrs, "aria-hidden"
+            ) or self.check_bool_attr(element.attrs, "hidden")
         return False
 
     # Function to remove tags
     def clean_html(self, html):
         soup = BeautifulSoup(html, "html.parser")
-        for data in soup(['style', 'script', 'head', 'noscript', 'br', 'svg']):
+        for data in soup(["style", "script", "head", "noscript", "br", "svg"]):
             data.decompose()
 
         for data in soup():
@@ -50,16 +53,31 @@ class BrowserService:
 
         return str(soup()[0])
 
-    def perform_action(self, interaction:Interaction):
-        if interaction.action == 'navigation':
-            url = interaction.params if interaction.params != '' else interaction.locator
+    def perform_action(self, interaction: Interaction):
+        if interaction.action == "navigation":
+            url = (
+                interaction.params if interaction.params != "" else interaction.locator
+            )
             self.page.goto(url)
-        if interaction.action == 'click':
+        self.assert_element_exists(interaction.locator)
+        if interaction.action == "click":
             self.page.click(interaction.locator, timeout=1000)
-        if interaction.action == 'write':
+        if interaction.action == "write":
             self.page.fill(interaction.locator, interaction.params, timeout=1000)
-        if interaction.action == 'select':
+        if interaction.action == "select":
             self.page.locator(interaction.locator).select_option(interaction.params)
+
+    def assert_element_exists(self, xpath):
+        if not self.page.locator(xpath).is_visible():
+            raise ValueError(
+                f"It was expected element {xpath} to be present but it is not present in the DOM"
+            )
+
+    def assert_element_not_exists(self, xpath):
+        if self.page.locator(xpath).is_visible():
+            raise ValueError(
+                f"It was expected element {xpath} to not be present but it is present in the DOM"
+            )
 
     def get_screenshot(self, output_path):
         self.page.screenshot(path=output_path)

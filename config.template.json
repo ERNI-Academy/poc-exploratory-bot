@@ -3,7 +3,8 @@
     "retry_attempts": 3,
     "sut": {
         "requirements": "./sample/requirements.txt",
-        "test_data": "./sample/data.json"
+        "test_data": "./sample/data.json",
+        "base_url": "https://www.saucedemo.com"
     },
     "llm": {
         "type": "your-model-type",

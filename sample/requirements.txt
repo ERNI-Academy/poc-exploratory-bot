@@ -1,5 +1,4 @@
 Authentication and Registration (Login):
-1.1. The system must allow users to register.
 1.2. Users must provide a username and password to log in.
 1.3. The system must verify the user's credentials when logging in.
 1.4. This view should be the homepage of the application.

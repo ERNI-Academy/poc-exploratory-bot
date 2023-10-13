@@ -1,0 +1,17 @@
+The proposed verdict does not match with the current context. I found the next error:
+$error
+
+Could you re-evaluate all the verification  taking into account this feedback?
+
+Use the following JSON format for your response:
+$verification_template
+
+context:
+{
+    "url": "$url",
+    "DOM": "$DOM"
+}
+
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than $tokens tokens.

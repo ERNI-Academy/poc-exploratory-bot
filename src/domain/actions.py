@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from typing import List
 
@@ -9,6 +8,10 @@ class Interaction:
     locator: str = ""
     params: str = ""
 
+
 @dataclass
 class Interactions:
+    action: str
+    acceptance: str
     interactions: List[Interaction]
+    test_data: List[dict]

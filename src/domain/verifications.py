@@ -1,11 +1,13 @@
-
 from dataclasses import dataclass
 from typing import List
+
 
 @dataclass
 class ElementReviewed:
     locator: str
     explanation: str
+    should_exist: bool
+
 
 @dataclass
 class Verdict:
@@ -22,4 +24,3 @@ class Verifications:
     not_satisfied: Verdict
     satisfied: Verdict
     explanation: str
-    

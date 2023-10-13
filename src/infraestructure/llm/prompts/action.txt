@@ -1,11 +1,9 @@
 reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
 
-I am executing a test case on a web application. I need to know which actions to perform on each element in the DOM provided in the dom in order to complete the current step. I only want indications for the current_step, don't advance any action of the future.
-You will be provided with information about the current state of the webpage, including the URL and DOM structure, as well as available test data. 
-Your response should be a detailed list specifying the interactions to be performed over the browser. Each interaction should include:
- 1. The action from available actions
- 2. The locator (using XPath) of the element, if the element is present in the DOM provided at context. Otherwise use "UnkownLocator" word.
- 3. Any param required to perform the action.
+I am executing a test case on a web application.
+
+The goal is to define which atomic interactions are needed to complete the current step. You will be provided with information about the current state of the web page, including DOM and URL. You will be provided with available test data to execute your test case. You will be provided with instructions about the format of your response and specific guidance about how to achieve the goal.
+
 
 context:
 {
@@ -29,6 +27,13 @@ $action_catalog
 response template:
 $action_template
 
+
+Decision guiadance:
+1. Consider only action and acceptance of the step_number is equal to current_step
+2. List the atomic actions from available actions needed to accomplish the step considering the current DOM. It is mandatory to add inspection actions aligned with the acceptance.
+3. fill the response template. Take into account that the action should be from the available actions list, the locator should be the XPATH of the element in the DOM and any parameter
+4. Re-evaluate your response ensuring that the locators exists in the provided DOM
+5. Calculate the test data needed for the next step. Test data should include the current test data updated with the information derived from the current actions. Test data should add new information regarding the elements that we are interacting if they are relevant (i.e: Information used to fill forms, Information about elements selected, etc..)
 
 It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
 It is important that your resonse should be less than $tokens tokens.
