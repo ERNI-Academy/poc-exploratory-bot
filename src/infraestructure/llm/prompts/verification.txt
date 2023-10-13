@@ -30,7 +30,7 @@ Guidance for verification:
 4. Make new deductions with all the information provided assuming that the provided context satisfies the acceptance_criteria of the current_step. You should consider the 5 most relevant elements displayed in the DOM and as a secondary criteria the URL
 5. Re-evaluate your deductions ensuring that the locators are valid XPATH expressions. resolve the should_exist property based on the argumentation. if you said that element is missing should_exist should be false, otherwise true
 6. write down an explanation sumarizing all the deductions performed on step 4 and 5
-7. Given satisfied arguments from step 6 and not satisfied arguments from step 3, select which one fits better with the context provided.
+7. Given satisfied arguments from step 6 and not satisfied arguments from step 3, select which one fits better with the context provided. You should take a decision about which one you choose.
 8. Write down a new explanation refering what is the reasoning behind step 7.
 9. Determine the result. Use the word "pass" if satisfied arguments are selected, use the word "fail" if not_satisfied is selected. It is important that you use this words pass or fail for the result in your response.
 10. Order all the information in the response template provided above, it is mandatory to respect the proper JSON format. The 'should_exist' property should be bool type, don't use string type for this property.

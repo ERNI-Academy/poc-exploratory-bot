@@ -24,7 +24,9 @@ class InteractionException(Exception):
 
 
 class VerificationException(Exception):
-    pass
+    def __init__(self, original_exception, *args: object) -> None:
+        super().__init__(*args)
+        self.original_exception = original_exception
 
 
 class ExploratoryBot:
@@ -94,124 +96,87 @@ class ExploratoryBot:
         return use_cases
 
     def execute_use_case(self, use_case: UseCase, test_data_path: str):
-        print(f"Starting use case: ", use_case.name)
         verifications = []
-        action_catalog = self.read_file(self.action_catalog_sample)
-        test_data = self.read_file(test_data_path)
+        action_data, verification_data = self.get_context_data(use_case, test_data_path)
 
-        template_action = self.read_file(self.action_sample)
-        template_verification = self.read_file(self.verification_sample)
-
-        steps = json.dumps(
-            [
-                {
-                    "step_number": i + 1,
-                    "action": step.action,
-                    "acceptance": step.expected,
-                }
-                for (i, step) in enumerate(use_case.steps)
-            ]
-        )
-
-        action_data = {
-            "test_data": test_data,
-            "action_template": template_action,
-            "use_case_name": use_case.name,
-            "use_case_steps": str(steps),
-            "action_catalog": action_catalog,
-            "url": "$url",
-            "DOM": "$DOM",
-            "step": "$step",
-        }
-
-        verification_data = {
-            "url": "$url",
-            "DOM": "$DOM",
-            "test_data": test_data,
-            "verification_template": str(template_verification),
-            "use_case_name": use_case.name,
-            "use_case_steps": steps,
-            "step": "$step",
-        }
-
-        step = 1
         self.browser_service.start()
-
+        step = 1
         for use_step in use_case.steps:
+            ###### Perform step attempt
             attempt = 0
-            verification = None
-            name = f"{step}"
-            path = f"{self.out_dir}/{step}_{attempt}_action"
-            interactions = self.resolve_use_case_step_actions(
-                name, action_data, self.out_dir
-            )
-            while attempt <= self.attempts:
+            exception = None
+            while attempt < self.attempts:
                 try:
-                    action_data[test_data] = json.dumps(interactions.test_data)
-                    verification_data[test_data] = json.dumps(interactions.test_data)
-                    self.execute_interactions(interactions, path)
-                    sleep(1)
+                    interactions = self.do_interaction(
+                        step, action_data, self.out_dir, attempt, exception
+                    )
+                    if not interactions is None:
+                        action_data["test_data"] = json.dumps(interactions.test_data)
+                        verification_data["test_data"] = json.dumps(
+                            interactions.test_data
+                        )
                     verification = self.do_verification(
-                        step, verification_data, self.out_dir, attempt
+                        step, verification_data, self.out_dir, attempt, exception
                     )
                     if verification.result == "fail":
-                        raise VerificationException
+                        exception = None
                     break
-
                 except InteractionException as e:
-                    attempt += 1
-                    path = f"{self.out_dir}/{step}_{attempt}_action"
-                    interactions = self.resolve_use_case_attempt_actions(
-                        f"{step}_{attempt}", e, self.out_dir
-                    )
+                    exception = e
                 except VerificationException as e:
-                    attempt += 1
-                    interactions = self.resolve_use_case_step_actions(
-                        name, action_data, self.out_dir, attempt
-                    )
+                    exception = e
+                attempt += 1
+            #####
 
             if verification is None:
                 verification = self.verify_use_case_step_expected(
                     step, verification_data, self.out_dir, attempt
                 )
-
             verifications.append(verification)
 
             if verification.result == "fail":
                 break
-
             step += 1
 
         self.browser_service.close()
         return verifications
 
-    def do_verification(self, step, verification_data, out_dir, attempt):
-        verification = self.verify_use_case_step_expected(
-            step, verification_data, out_dir, attempt
+    def do_interaction(self, step, data, out_dir, attempt, exception=None):
+        if exception is None:
+            interactions = self.resolve_use_case_step_actions(step, data, self.out_dir)
+        elif type(exception is InteractionException):
+            interactions = self.resolve_use_case_attempt_actions(
+                f"{step}_{attempt}", exception, out_dir
+            )
+        else:
+            return
+        return interactions
+        self.execute_interactions(interactions, f"{out_dir}/{step}_{attempt}_action")
+
+    def do_verification(self, step, verification_data, out_dir, attempt, exception):
+        if type(exception) is VerificationException:
+            verification = self.verify_use_case_step_expected_attempt(
+                step, out_dir, exception, attempt
+            )
+        else:
+            verification = self.verify_use_case_step_expected(
+                step, verification_data, out_dir, attempt
+            )
+        result = (
+            verification.satisfied
+            if verification.result == "pass"
+            else verification.not_satisfied
         )
-        counter = 0
-        while counter < self.attempts:
-            try:
-                result = (
-                    verification.satisfied
-                    if verification.result == "pass"
-                    else verification.not_satisfied
-                )
-                for element in result.elements_reviewed:
-                    if not "URL" in element.locator.upper():
-                        if element.should_exist:
-                            self.browser_service.assert_element_exists(element.locator)
-                        else:
-                            self.browser_service.assert_element_not_exists(
-                                element.locator
-                            )
-                break
-            except Exception as e:
-                verification = self.verify_use_case_step_expected_attempt(
-                    step, out_dir, e, attempt, counter
-                )
-            finally:
-                counter += 1
+        try:
+            for element in result.elements_reviewed:
+                if not "URL" in element.locator.upper():
+                    if element.should_exist:
+                        self.browser_service.assert_element_exists(element.locator)
+                    else:
+                        self.browser_service.assert_element_not_exists(element.locator)
+        except Exception as e:
+            raise VerificationException(e)
+
         return verification
 
     def execute_interactions(self, interactions: Interactions, path):
@@ -244,15 +209,15 @@ class ExploratoryBot:
         return from_dict(Interactions, json.loads(response))
 
     def verify_use_case_step_expected_attempt(
-        self, step, folder: str, exception, attempt: int = 0, counter: int = 0
+        self, step, folder: str, exception, attempt: int = 0
     ):
-        prompt_path = f"{folder}/{step}_{attempt}_verification_req_{counter}.txt"
-        response_path = f"{folder}/{step}_{attempt}_verification_res_{counter}.json"
+        prompt_path = f"{folder}/{step}_{attempt}_verification_req.txt"
+        response_path = f"{folder}/{step}_{attempt}_verification_res.json"
 
         data = {
             "url": self.browser_service.get_url(),
             "DOM": self.browser_service.get_content(),
-            "error": str(exception),
+            "error": str(exception.original_exception),
             "verification_template": self.read_file(self.verification_sample),
         }
 
@@ -315,3 +280,43 @@ class ExploratoryBot:
     def write_file(self, file_path: str, content: str):
         with codecs.open(file_path, "w", "utf-8") as f:
             f.write(content)
+
+    def get_context_data(self, use_case, test_data_path):
+        action_catalog = self.read_file(self.action_catalog_sample)
+        test_data = self.read_file(test_data_path)
+
+        template_action = self.read_file(self.action_sample)
+        template_verification = self.read_file(self.verification_sample)
+
+        steps = json.dumps(
+            [
+                {
+                    "step_number": i + 1,
+                    "action": step.action,
+                    "acceptance": step.expected,
+                }
+                for (i, step) in enumerate(use_case.steps)
+            ]
+        )
+        action_data = {
+            "test_data": test_data,
+            "action_template": template_action,
+            "use_case_name": use_case.name,
+            "use_case_steps": str(steps),
+            "action_catalog": action_catalog,
+            "url": "$url",
+            "DOM": "$DOM",
+            "step": "$step",
+        }
+
+        verification_data = {
+            "url": "$url",
+            "DOM": "$DOM",
+            "test_data": test_data,
+            "verification_template": str(template_verification),
+            "use_case_name": use_case.name,
+            "use_case_steps": steps,
+            "step": "$step",
+        }
+
+        return action_data, verification_data
