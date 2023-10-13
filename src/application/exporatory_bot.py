@@ -82,16 +82,13 @@ class ExploratoryBot:
 
         reqs = self.read_file(req_path)
         sample = json.loads(self.read_file(self.use_case_sample))
-        print(f"Reading requirement file: ", req_path)
         scenarios = str(executed_scenarios)
         cov_reqs = str(covered_requirements)
         data = asdict(UseCaseData(reqs, json.dumps(sample), scenarios, cov_reqs))
 
         request, response = self.prompt_service.decide_new_use_case(data)
         self.write_file(prompt_path, request)
-        print(f"File generated: ", prompt_path)
         self.write_file(response_path, response)
-        print(f"File generated: ", response_path)
         use_cases = from_dict(UseCases, json.loads(response))
         return use_cases
 
@@ -104,6 +101,7 @@ class ExploratoryBot:
         for use_step in use_case.steps:
             ###### Perform step attempt
             attempt = 0
+            verification = None
             exception = None
             while attempt < self.attempts:
                 try:
@@ -120,13 +118,14 @@ class ExploratoryBot:
                     )
                     if verification.result == "fail":
                         exception = None
+                        continue
                     break
                 except InteractionException as e:
                     exception = e
                 except VerificationException as e:
                     exception = e
-                attempt += 1
-            #####
+                finally:    
+                    attempt += 1
 
             if verification is None:
                 verification = self.verify_use_case_step_expected(
@@ -143,15 +142,15 @@ class ExploratoryBot:
 
     def do_interaction(self, step, data, out_dir, attempt, exception=None):
         if exception is None:
-            interactions = self.resolve_use_case_step_actions(step, data, self.out_dir)
-        elif type(exception is InteractionException):
+            interactions = self.resolve_use_case_step_actions(step, data, self.out_dir, attempt)
+        elif type(exception) is InteractionException:
             interactions = self.resolve_use_case_attempt_actions(
                 f"{step}_{attempt}", exception, out_dir
             )
         else:
             return
-        return interactions
         self.execute_interactions(interactions, f"{out_dir}/{step}_{attempt}_action")
+        return interactions        
 
     def do_verification(self, step, verification_data, out_dir, attempt, exception):
         if type(exception) is VerificationException:
@@ -184,6 +183,7 @@ class ExploratoryBot:
         for interaction in interactions.interactions:
             try:
                 self.browser_service.perform_action(interaction)
+                sleep(1)
             except Exception as e:
                 raise InteractionException(interaction, e)
             finally:
@@ -193,8 +193,8 @@ class ExploratoryBot:
     def resolve_use_case_attempt_actions(
         self, attempt, exception: InteractionException, folder: str
     ):
-        prompt_path = f"{folder}/{attempt}_attempt_req.txt"
-        response_path = f"{folder}/{attempt}_attempt_res.json"
+        prompt_path = f"{folder}/{attempt}_action_req.txt"
+        response_path = f"{folder}/{attempt}_action_res.json"
         data = {
             "url": self.browser_service.get_url(),
             "DOM": self.browser_service.get_content(),
@@ -279,6 +279,7 @@ class ExploratoryBot:
 
     def write_file(self, file_path: str, content: str):
         with codecs.open(file_path, "w", "utf-8") as f:
+            print(f" File generated: ", file_path)
             f.write(content)
 
     def get_context_data(self, use_case, test_data_path):

@@ -37,7 +37,7 @@ class PromptService:
         response = openai.ChatCompletion.create(
             engine=self.engine,
             messages=self.messages,
-            temperature=0.1,
+            temperature=0.7,
             max_tokens=self.response_tokens + 200,
             top_p=0.95,
             frequency_penalty=0,
@@ -63,26 +63,31 @@ class PromptService:
         return re.findall(regex, message, flags=re.MULTILINE | re.DOTALL)[0]
 
     def decide_new_use_case(self, data) -> (str, str):
+        print("[ExploratoryBot] Generating new use case...")
         request = self.apply_template(self.use_case_template_path, data)
         response = self.send_to_QA(request)
         return request, response
 
     def decide_actions_from_step(self, data):
+        print("[ExploratoryBot] Generating new action for step...")
         request = self.apply_template(self.action_template_path, data)
         response = self.send_to_QA(request)
         return request, response
 
     def decide_actions_from_attempt(self, data):
+        print("[ExploratoryBot] Generating new action for step attempt...")
         request = self.apply_template(self.attempt_template_path, data)
         response = self.send_to_QA(request, False)
         return request, response
 
     def decide_success_of_step(self, data):
+        print("[ExploratoryBot] Checking success of step...")
         request = self.apply_template(self.verification_template_path, data)
         response = self.send_to_QA(request)
         return request, response
 
     def decide_success_of_step_attempt(self, data):
+        print("[ExploratoryBot] Checking success of step attempt...")
         request = self.apply_template(self.verification_template_attempt_path, data)
         response = self.send_to_QA(request, False)
         return request, response

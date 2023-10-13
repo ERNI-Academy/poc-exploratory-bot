@@ -54,6 +54,7 @@ class BrowserService:
         return str(soup()[0])
 
     def perform_action(self, interaction: Interaction):
+        print(f'Execute action: \n '+ interaction.action + ' \n '+ interaction.locator +' \n '+ interaction.params)
         if interaction.action == "navigation":
             url = (
                 interaction.params if interaction.params != "" else interaction.locator

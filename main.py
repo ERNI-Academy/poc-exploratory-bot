@@ -22,5 +22,5 @@ bot = ExploratoryBot(output_dir, llm, browser, config["retry_attempts"])
 
 bot.execute_use_cases(sut_reqs, sut_test_data, 1)
 
-reporting = ReportingService(output_dir)
-reporting.generate_report_file()
+#reporting = ReportingService(output_dir)
+#reporting.generate_report_file()
