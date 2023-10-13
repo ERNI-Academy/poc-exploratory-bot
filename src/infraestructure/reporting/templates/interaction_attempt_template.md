@@ -1,3 +1,3 @@
-| ATTEMPT | # | ACTION | LOCATOR | PARAMS |
-|---------|---|--------|---------|--------|
+| ATTEMPT | # | ACTION | LOCATOR | PARAMS | SCREENSHOT |
+|---------|---|--------|---------|--------|------------|
 $interactions

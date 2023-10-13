@@ -3,8 +3,14 @@
 |---|------|----------|--------------|--------|
 $step_output
 
+<details><summary>Step Interactions</summary>
+
 #### **INTERACTIONS:**
 $interactions_output
+
+</details>
+
+<details><summary>Step Acceptance Criteria</summary>
 
 #### **STEP ACCEPTANCE CRITERIA:**
 - $step_acceptance_criteria
@@ -12,15 +18,9 @@ $interactions_output
 #### **STEP RESULT EXPLANATION:**
 - $step_result_explanation
 
-    #### Satisfied Rationale:
-    - **Explanation:** $step_satisfied_explanation
-    - **Elements Reviewed:**
-$satisfied_elements_reviewed
+$step_result_rationale
 
-    #### Not Satisfied Rationale:
-    - **Explanation:** $step_not_satisfied_explanation
-    - **Elements Reviewed:**
-$not_satisfied_elements_reviewed
+</details>
 
 #### **EVIDENCE:**
 $evidence
