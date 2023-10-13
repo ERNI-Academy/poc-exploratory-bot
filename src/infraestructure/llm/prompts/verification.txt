@@ -33,7 +33,7 @@ Guidance for verification:
 7. Given satisfied arguments from step 6 and not satisfied arguments from step 3, select which one fits better with the context provided.
 8. Write down a new explanation refering what is the reasoning behind step 7.
 9. Determine the result. Use the word "pass" if satisfied arguments are selected, use the word "fail" if not_satisfied is selected. It is important that you use this words pass or fail for the result in your response.
-10. Order all the information in the response template provided above, it is mandatory to respect the proper JSON format. the 'should_exist' property should be bool type
+10. Order all the information in the response template provided above, it is mandatory to respect the proper JSON format. The 'should_exist' property should be bool type, don't use string type for this property.
 
 Note: Please ensure to review and fill in the information as needed before submitting the response.
 

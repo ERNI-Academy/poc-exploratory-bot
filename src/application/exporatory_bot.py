@@ -80,17 +80,21 @@ class ExploratoryBot:
 
         reqs = self.read_file(req_path)
         sample = json.loads(self.read_file(self.use_case_sample))
+        print(f"Reading requirement file: ", req_path)
         scenarios = str(executed_scenarios)
         cov_reqs = str(covered_requirements)
         data = asdict(UseCaseData(reqs, json.dumps(sample), scenarios, cov_reqs))
 
         request, response = self.prompt_service.decide_new_use_case(data)
         self.write_file(prompt_path, request)
+        print(f"File generated: ", prompt_path)
         self.write_file(response_path, response)
+        print(f"File generated: ", response_path)
         use_cases = from_dict(UseCases, json.loads(response))
         return use_cases
 
     def execute_use_case(self, use_case: UseCase, test_data_path: str):
+        print(f"Starting use case: ", use_case.name)
         verifications = []
         action_catalog = self.read_file(self.action_catalog_sample)
         test_data = self.read_file(test_data_path)
@@ -185,7 +189,8 @@ class ExploratoryBot:
         verification = self.verify_use_case_step_expected(
             step, verification_data, out_dir, attempt
         )
-        while True:
+        counter = 0
+        while counter < self.attempts:
             try:
                 result = (
                     verification.satisfied
@@ -203,8 +208,10 @@ class ExploratoryBot:
                 break
             except Exception as e:
                 verification = self.verify_use_case_step_expected_attempt(
-                    step, out_dir, e, attempt
+                    step, out_dir, e, attempt, counter
                 )
+            finally:
+                counter += 1
         return verification
 
     def execute_interactions(self, interactions: Interactions, path):
@@ -237,10 +244,10 @@ class ExploratoryBot:
         return from_dict(Interactions, json.loads(response))
 
     def verify_use_case_step_expected_attempt(
-        self, step, folder: str, exception, attempt: int = 0
+        self, step, folder: str, exception, attempt: int = 0, counter: int = 0
     ):
-        prompt_path = f"{folder}/{step}_{attempt}_verification_req.txt"
-        response_path = f"{folder}/{step}_{attempt}_verification_res.json"
+        prompt_path = f"{folder}/{step}_{attempt}_verification_req_{counter}.txt"
+        response_path = f"{folder}/{step}_{attempt}_verification_res_{counter}.json"
 
         data = {
             "url": self.browser_service.get_url(),

@@ -4,7 +4,7 @@
     "interactions": [
         {
             "action": "from the available actions",
-            "locator": "XPath of the element to perform the action or UnkownLocator if the element is not present",
+            "locator": "XPath of the element to perform the action",
             "params": "any param needed to perform the action"
         }
     ],

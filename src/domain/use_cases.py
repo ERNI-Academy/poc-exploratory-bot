@@ -20,6 +20,7 @@ class UseCaseStep:
 @dataclass
 class UseCase:
     name: str
+    description: str
     steps: List[UseCaseStep]
     assumptions: List[str]
 
