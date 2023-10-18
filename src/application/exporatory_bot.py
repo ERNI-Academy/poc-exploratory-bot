@@ -140,6 +140,7 @@ class ExploratoryBot:
             test_case["test_case"]["steps"][step_number - 1]["summary"] = verification[
                 "match_explanation"
             ]
+            test_case["test_case"]["user_journey"].pop(0)
         else:
             test_case["test_case"]["steps"][step_number - 1]["result"] = "fail"
             test_case["test_case"]["steps"][step_number - 1]["summary"] = verification[
@@ -250,7 +251,7 @@ class ExploratoryBot:
                     "params": "any param needed to perform the action",
                 }
             ],
-            "Assert": "FILL THE BLANK",
+            "Assert": test_case["test_case"]["user_journey"][0]["step"],
             "requirements": ["FILL THE BLANK"],
         }
 

@@ -16,17 +16,21 @@ Response Template:
         "description": "Goal of the test case and general information",
         "verification_scope": "what we want to verify in this test_case",
         "atomic_verifications": ["list of atomic verifications]
-        "summary": "a summary of the context for this test case, written as a use case. It should include describe the jorney of the user to achieve the verification_scope"
+        "summary": "a summary of the context for this test case, written as a use case. It should include describe the jorney of the user to achieve the verification_scope",
+        "user_journey": [{
+          "step": "list of actions that the user needs to perform in order to reach the initial point of the verification scope",
+          "requirement": "requirement id for the specific user_journey step",
+          "test_data": ["test data needed in order to be able to execute the journey_step based on the requirements"]
+        }]
     },
     "rationale": "Any consideration that it is relevant to add"
 }
 
 Guidance:
 1. Read carefully the requirements and make deductions about which kind of application is. Add all the knowledge that you have to fill the blanks or ambiguity.
-2. Analyse the dependency between them and construct a consistent flow
-3. Select a verification scope. It should be atomic and testable.
-4. Define a new test case that cover the functionality.
-5. Breakdown the verification scope into atomic verifications.
+2. Analyse the dependency between the requirements, assume that the user just opened the application in order to construct a consistent flow
+3. Describe the user journey from the initial point until the user is capable to verify the verification scope based on the requirements defined. Each journey step should be refered only by a single requiremnent, but each requirement can be referenced by multiple journey steps. Make the journey steps as atomic and detailed as possible.
+4. Re-evalute your response looking for other requirements that can add information details to the user journey.
 
 It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
 It is important that your resonse should be less than 800 tokens.
