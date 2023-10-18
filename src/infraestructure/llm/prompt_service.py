@@ -7,15 +7,25 @@ from time import sleep
 
 class PromptService:
     def __init__(self, config: json) -> None:
-        self.use_case_template_path = "./src/infraestructure/llm/prompts/use_cases.txt"
-        self.action_template_path = "./src/infraestructure/llm/prompts/action.txt"
+        self.use_case_template_path = (
+            "./src/infraestructure/llm/prompts/0_test_case.txt"
+        )
+        self.application_context_template_path = (
+            "./src/infraestructure/llm/prompts/1_application_context.txt"
+        )
+        self.refine_steps_template_path = (
+            "./src/infraestructure/llm/prompts/2_refine_steps.txt"
+        )
+        self.refine_steps_attempt_template_path = (
+            "./src/infraestructure/llm/prompts/2_refine_steps_retry.txt"
+        )
         self.verification_template_path = (
-            "./src/infraestructure/llm/prompts/verification.txt"
+            "./src/infraestructure/llm/prompts/3_verification.txt"
         )
-        self.attempt_template_path = "./src/infraestructure/llm/prompts/new_attempt.txt"
-        self.verification_template_attempt_path = (
-            "./src/infraestructure/llm/prompts/verification_attempt.txt"
+        self.test_verification_template_path = (
+            "./src/infraestructure/llm/prompts/4_test_verification.txt"
         )
+
         openai.api_type = config["type"]
         openai.api_base = config["api"]
         openai.api_version = config["api_version"]
@@ -45,7 +55,7 @@ class PromptService:
             stop=None,
         )
 
-        self.messages[-1] = {"role": "user", "content": self.delete_dom_info(prompt)}
+        self.messages[-1] = {"role": "user", "content": prompt}
         response_text = self.clean_json_info(
             response["choices"][0]["message"]["content"]
         )
@@ -68,28 +78,34 @@ class PromptService:
         response = self.send_to_QA(request)
         return request, response
 
-    def decide_actions_from_step(self, data):
-        print("[ExploratoryBot] Generating new action for step...")
-        request = self.apply_template(self.action_template_path, data)
+    def understand_application_context(self, data) -> (str, str):
+        print("[ExploratoryBot] Getting application context...")
+        request = self.apply_template(self.application_context_template_path, data)
         response = self.send_to_QA(request)
         return request, response
 
-    def decide_actions_from_attempt(self, data):
-        print("[ExploratoryBot] Generating new action for step attempt...")
-        request = self.apply_template(self.attempt_template_path, data)
-        response = self.send_to_QA(request, False)
+    def refine_next_steps(self, data) -> (str, str):
+        print("[ExploratoryBot] Refining next steps...")
+        request = self.apply_template(self.refine_steps_template_path, data)
+        response = self.send_to_QA(request)
+        return request, response
+
+    def refine_next_step_attempt(self, data) -> (str, str):
+        print("[ExploratoryBot] Refining next steps retry...")
+        request = self.apply_template(self.refine_steps_attempt_template_path, data)
+        response = self.send_to_QA(request)
         return request, response
 
     def decide_success_of_step(self, data):
         print("[ExploratoryBot] Checking success of step...")
         request = self.apply_template(self.verification_template_path, data)
-        response = self.send_to_QA(request)
+        response = self.send_to_QA(request, False)
         return request, response
 
-    def decide_success_of_step_attempt(self, data):
-        print("[ExploratoryBot] Checking success of step attempt...")
-        request = self.apply_template(self.verification_template_attempt_path, data)
-        response = self.send_to_QA(request, False)
+    def decide_success_of_test(self, data):
+        print("[ExploratoryBot] Checking success of test...")
+        request = self.apply_template(self.test_verification_template_path, data)
+        response = self.send_to_QA(request)
         return request, response
 
     def apply_template(self, template, data) -> str:

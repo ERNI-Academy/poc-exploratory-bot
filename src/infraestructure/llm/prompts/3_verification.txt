@@ -1,0 +1,29 @@
+Whitin the current context.
+Your goal is to understand if the application match with the expected criteria of the current step and the verification scope
+
+you will be provided with the response template
+you will be provided with guidance
+you will be provided with the test case
+
+Remember this is the application_context
+$application_context
+
+Test case:
+$test_case
+
+Response template:
+{
+    "application_context: "application context calculated",
+    "step_expected": "Then property of the current_step",
+    "match_explanation": "Reasoning about if application context match the current_step or not",
+    "step_met": true|false,
+}
+
+Guidance:
+1. Read the test case and understand its purpose. We are at step_number $step_number. Consider its Arrange and Act to understand how to arrive to the current applciation context
+2. Compare the application_context with the step_number assert. Take into account that if application_context doesn't match set_number assert the step is not met
+3. Write down an explanation about if step assert is met or not including which elements of the context reinfroce your explanation.
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for
+properties.
+It is important that your resonse should be less than 800 tokens.

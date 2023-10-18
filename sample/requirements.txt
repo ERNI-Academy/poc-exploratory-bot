@@ -5,7 +5,7 @@ Authentication and Registration (Login):
 1.5. After perform a valid login the application should redirect to inventory page.
 
 Inventory Display:
-2.1. The system must display a list of available product categories.
+2.1. The system must display a list of available products.
 2.2. Users should be able to sort products by name and price.
 2.3. There should be a details page for each product that includes detailed information such as description, price, images, and stock availability.
 

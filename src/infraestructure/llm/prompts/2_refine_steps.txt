@@ -1,0 +1,44 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+
+Your goal is to complete calculate the next step of the presented test case. To do it you must mainly replace with valid information the "FILL THE BLANK" sections
+
+You will be provided with the current context
+You will be provided with the test case
+You will be provided with guidance
+you will be provided with requirements
+
+{
+    "Requirements": $requirements
+}
+
+
+current context: 
+$application_context
+
+available actions: 
+$available_actions
+
+Test data:
+$test_data
+
+Test case: 
+$test_case
+
+response template:
+$response_template
+
+Guidance:
+1. Read the test case name, description, verification_scope and rationale and understand its purpose
+2. Read and understand the current application context and its features
+3. Make deductions about what should be the next step based on the requirements, application context and test purpose. If requirements has any GAP figure out applying your general knowledge. Select the action that make the execution close to the test purpose
+4. Combine multiple features from the application context to build the "Act" of the next step should be an action that can be performed in the current application context, Describe it as an action that the user is performing. i.e "The user do this and that..".
+5. "Assert" of the next step should describe the expected behavior after perform the action. The assert is composed by assertions and checks. You cannot use any active action like click, write, etc... Describe it from user point of view. i.e "User is redirected to...", "User inspects this"
+6. requirements should be the requirements id affected by the Act and the Assert
+7. actions is a list of interaction. use any of the available actions for action property, use the xpath locator for the locator property and add in params any param needed to execute the action
+8. Fill the response template by replacing all "FILL THE BLANK" following the guidance
+9. Your response should follow the response template. Don't add any other information
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for
+properties.
+It is important that your resonse should be less than 800 tokens.

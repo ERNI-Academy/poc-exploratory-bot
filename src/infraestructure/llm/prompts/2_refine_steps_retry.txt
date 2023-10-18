@@ -1,0 +1,22 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+Your goal is to decide which actions are needed to perform the step in the response template.
+action should be one of the available actions
+locator should be one of the provided DOM
+
+context:
+{
+    "url": "$url",
+    "DOM": "$DOM"
+}
+available actions: 
+$available_actions
+
+Test data:
+$test_data
+
+response template:
+$response_template
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than 800 tokens.

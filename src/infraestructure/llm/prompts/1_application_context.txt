@@ -1,0 +1,33 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+Your goal is to understand which kind of application is the application presented. Which is the current page and it's
+functional features.
+
+You will be provided with guidance about how to made the evaluation and expected response format
+You will be provided with context information such as the current URL and the current DOM of the application
+
+
+context:
+{
+    "url": "$url",
+    "DOM": "$DOM"
+}
+
+
+Response_template:
+{
+"application_context": "context of the application writen from the users point of view",
+"features": ["list of operations that are possible to be performed in the current context"],
+}
+
+Guidance:
+1. Update the application_context property by analyizing the current context information (DOM and URL) and make
+deductions about what is the current context of the application, which elements are present, and which operations are
+possible to perform in it. Describe it from the user point of view. i.e "User is in that page that allow him to do..."
+2. considering the following DOM elements $elements
+3. Update "features" with a list of the possible operations that are possible to do with this DOM in terms of
+functionality. Be exhaustive on your response. Any button, form, link, input, select have a feature behind
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for
+properties.
+It is important that your resonse should be less than 800 tokens.

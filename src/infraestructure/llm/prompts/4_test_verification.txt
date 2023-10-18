@@ -1,0 +1,49 @@
+reset your memory and act like this is a new conversation ignoring all the context that I provided to you since now.
+
+A tester is making exploratory test on a application. Your goal is to determine if hes actions are enough to determine if specific verification scope is completed and its result
+
+You will provided with the context of the test and verification
+You will be provided with the navigation and actions performed by the tester
+You will be provided with guidance
+you will be provided with a response template
+
+test and verification context:
+$test_context
+
+
+Exploratory stages:
+$exploratory_stages
+
+
+response template:
+{
+    "scope_verification": "scope verification from test context",
+    "atomic_verifications": ["list of atomic verifications from test context],
+    "verification_breakdown": [
+        {"atomic_verification": "description of atomic verification",
+        "exploratory_stages": ["id of the exploratory stages. use empty list if any of the stages covers it "],
+        "result": "pass|fail|unkown."
+        "explanation": "explain how this stages covers this atomic verification"
+        }
+        ],
+    "need_more_steps": true|false,
+    "result": "pass|fail|unkown",
+    "result_explanation": "explanation about result and need_more_steps"
+}
+
+Guidance.
+
+1. Carefully review the test context, paying special attention to the atomic_verifications. This is crucial for determining what needs to be verified.
+2. Thoroughly examine the exploratory stages performed by the tester. You need to identify which stages are relevant for the verification_scope
+3. Given the current context and the exploratory stages answer the following questions:
+  $atomic_verifications
+4. mark if more steps are needed. Use true if the verification scope are not totally covered. Use false if there are part of the verification scope pending to be covered
+5. Mark the result of the verification scope. Use "fail" if any of the atomic verifications is "fail". Use "pass" if all the atomic verifications is "pass". Otherwise use "unkown"
+
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than 800 tokens.
+
+
+It is important that the response is in a valid JSON format following the response template. Use double quotes for properties.
+It is important that your resonse should be less than 800 tokens.

@@ -1,6 +1,7 @@
 # Application ignores
 config.json
 result/
+result copy/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

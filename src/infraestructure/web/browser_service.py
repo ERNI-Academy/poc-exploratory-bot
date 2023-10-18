@@ -54,7 +54,14 @@ class BrowserService:
         return str(soup()[0])
 
     def perform_action(self, interaction: Interaction):
-        print(f'Execute action: \n '+ interaction.action + ' \n '+ interaction.locator +' \n '+ interaction.params)
+        print(
+            f"Execute action: \n "
+            + interaction.action
+            + " \n "
+            + interaction.locator
+            + " \n "
+            + interaction.params
+        )
         if interaction.action == "navigation":
             url = (
                 interaction.params if interaction.params != "" else interaction.locator
@@ -69,7 +76,7 @@ class BrowserService:
             self.page.locator(interaction.locator).select_option(interaction.params)
 
     def assert_element_exists(self, xpath):
-        if not self.page.locator(xpath).is_visible():
+        if len(self.page.locator(xpath).all()) == 0:
             raise ValueError(
                 f"It was expected element {xpath} to be present but it is not present in the DOM"
             )
@@ -79,6 +86,24 @@ class BrowserService:
             raise ValueError(
                 f"It was expected element {xpath} to not be present but it is present in the DOM"
             )
+
+    def get_relevant_elements(
+        self,
+    ):
+        elements = self.page.locator("//button").all()
+        elements.extend(self.page.locator("//a").all())
+        elements.extend(self.page.locator("//select").all())
+        elements.extend(self.page.locator("//input").all())
+
+        relevant_elements = [
+            self.clean_html(f"<html>{element.evaluate('el => el.outerHTML')}</html>")[
+                6:-7
+            ]
+            for element in elements
+            if not element.is_hidden()
+        ]
+
+        return relevant_elements
 
     def get_screenshot(self, output_path):
         self.page.screenshot(path=output_path)
